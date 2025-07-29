@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { nanoid } from 'nanoid';
 
 export type Todo = {
   id: string;
@@ -49,17 +48,28 @@ const todoSlice = createSlice({
   initialState,
   reducers: {
     initializeTodos: (state) => {
-      state.todos = loadFromLocalStorage();
+      const loadedTodos = loadFromLocalStorage();
+      // Ensure proper sequential numbering
+      loadedTodos.forEach((todo, index) => {
+        todo.todoNo = index + 1;
+      });
+      state.todos = loadedTodos;
     },
     addTodo: (state, action: PayloadAction<{ text: string; description: string }>) => {
+      // Find the highest todoNo and increment by 1 to ensure uniqueness
+      const maxTodoNo = state.todos.length > 0 ? Math.max(...state.todos.map(todo => todo.todoNo)) : 0;
       const newTodo: Todo = {
-        id: nanoid(),
-        todoNo: state.todos.length + 1,
+        id: Date.now().toString(),
+        todoNo: maxTodoNo + 1,
         text: action.payload.text,
         description: action.payload.description,
         completed: false,
       };
       state.todos.push(newTodo);
+      // Renumber all todos to maintain sequential order
+      state.todos.forEach((todo, index) => {
+        todo.todoNo = index + 1;
+      });
       saveToLocalStorage(state.todos);
     },
     toggleTodo: (state, action: PayloadAction<string>) => {
@@ -71,6 +81,10 @@ const todoSlice = createSlice({
     },
     deleteTodo: (state, action: PayloadAction<string>) => {
       state.todos = state.todos.filter(todo => todo.id !== action.payload);
+      // Renumber todos to maintain sequential order
+      state.todos.forEach((todo, index) => {
+        todo.todoNo = index + 1;
+      });
       saveToLocalStorage(state.todos);
     },
     updateTodoText: (state, action: PayloadAction<{ id: string; text: string; description: string }>) => {
