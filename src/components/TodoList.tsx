@@ -15,6 +15,7 @@ import {
   StructuredListCell,
   StructuredListBody,
   IconButton,
+  Heading,
 } from '@carbon/react';
 import { Add, Edit, TrashCan } from '@carbon/icons-react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -31,7 +32,7 @@ import {
 
 import styles from './TodoList.module.scss';
 
-const TodoList: React.FC = () => {
+const TodoList = () => {
   const dispatch = useAppDispatch();
   const { todos, searchQuery } = useAppSelector((state: RootState) => state.todos);
   
@@ -100,9 +101,21 @@ const TodoList: React.FC = () => {
     <Grid className={styles['todo-grid']}>
       <Column lg={12} md={8} sm={4} className={styles['todo-column']}>
         <div className={styles['todo-container']}>
-          <h1 className={styles['todo-title']}>
+          <Heading className={styles['todo-title']}>
             Todo List
-          </h1>
+          </Heading>
+
+          {/* Search Section */}
+          <div className={styles['search-section']}>
+            <Search
+              id="todo-search"
+              labelText="Search todos"
+              placeholder="Search todos..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              size="lg"
+            />
+          </div>
           
           {/* Add Todo Section */}
           <div className={styles['add-todo-section']}>
@@ -139,17 +152,6 @@ const TodoList: React.FC = () => {
             </Grid>
           </div>
 
-          {/* Search Section */}
-          <div className={styles['search-section']}>
-            <Search
-              id="todo-search"
-              labelText="Search todos"
-              placeholder="Search todos..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-              size="lg"
-            />
-          </div>
 
           {/* Todo List */}
           <div className={styles['todo-list-section']}>

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { nanoid } from 'nanoid';
 
-export interface Todo {
+export type Todo = {
   id: string;
   todoNo: number;
   text: string;
@@ -9,7 +9,7 @@ export interface Todo {
   completed: boolean;
 }
 
-interface TodoState {
+type TodoState = {
   todos: Todo[];
   searchQuery: string;
 }
